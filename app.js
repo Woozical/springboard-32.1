@@ -32,8 +32,23 @@ function meanHandler(request, response, next){
     }
 }
 
-app.get('/mean', meanHandler);
+function medianHandler(request, response, next){
+    try{
+        const nums = getNums(request.query).sort((a, b) => a - b);
+        let median;
+        if (nums.length % 2 === 0){
+            median = (nums[nums.length/2] + nums[(nums.length/2)-1]) / 2;
+        } else {
+            median = nums[Math.trunc(nums.length / 2) ];
+        }
+        return response.send(`Median is: ${median}`);
+    } catch (err) {
+        next(err);
+    }
+}
 
+app.get('/mean', meanHandler);
+app.get('/median', medianHandler);
 
 app.use((err, request, response, next) => {
     return response.send(`ERROR: ${err.msg} (Code: ${err.status})`);
