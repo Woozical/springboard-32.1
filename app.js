@@ -47,8 +47,26 @@ function medianHandler(request, response, next){
     }
 }
 
+function modeHandler(request, response, next){
+    try{
+        const nums = getNums(request.query);
+        const count = {};
+        nums.forEach((num) => {
+            count[num] = count[num] ? count[num] + 1 : 1;
+        })
+        const mode = Object.keys(count).reduce((prev, cur) => {
+            return count[prev] > count[cur] ? prev : cur
+        })
+        return response.send(`Mode is: ${mode}`);
+    } catch (err) {
+        next(err);
+    }
+}
+
+
 app.get('/mean', meanHandler);
 app.get('/median', medianHandler);
+app.get('/mode', modeHandler);
 
 app.use((err, request, response, next) => {
     return response.send(`ERROR: ${err.msg} (Code: ${err.status})`);
